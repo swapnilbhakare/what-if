@@ -1,0 +1,221 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "ID",
+            "name": "id",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Grid Fields",
+            "name": "fields",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "User Identity",
+            "name": "identity",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Tab Id",
+            "name": "tabId",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Visual Id",
+            "name": "visualId",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Database Name",
+            "name": "databaseName",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Table Name",
+            "name": "tableName",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Server Name",
+            "name": "serverName",
+            "kind": "GroupingOrMeasure"
+        },
+        {
+            "displayName": "Rls Query",
+            "name": "rls",
+            "kind": "GroupingOrMeasure"
+        }
+    ],
+    "privileges": [
+        {
+            "name": "WebAccess",
+            "essential": true,
+            "parameters": [
+                "https://*.azurewebsites.net",
+                "http://localhost:8000",
+                "https://*",
+                "http://*",
+                "https://magic-grid-api-app.azurewebsites.net"
+            ]
+        },
+        {
+            "name": "ExportContent",
+            "essential": true
+        }
+    ],
+    "objects": {
+        "general": {
+            "displayName": "General",
+            "displayNameKey": "formattingGeneral",
+            "properties": {
+                "filter": {
+                    "type": {
+                        "filter": true
+                    }
+                }
+            }
+        },
+        "conditionalFormating": {
+            "displayName": "Conditional Formatting",
+            "properties": {
+                "color": {
+                    "displayName": "Color",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "enableFeatures": {
+            "properties": {
+                "show": {
+                    "displayName": "Show",
+                    "displayNameKey": "Visual_Show",
+                    "type": {
+                        "bool": true
+                    }
+                }
+            }
+        },
+        "editableColumn": {
+            "properties": {
+                "toggle": {
+                    "displayName": "EditableColumn",
+                    "displayNameKey": "EditableColumn",
+                    "type": {
+                        "bool": true
+                    }
+                }
+            }
+        },
+        "enableApproval": {
+            "displayName": "Approval",
+            "displayNameKey": "Approval",
+            "properties": {
+                "enableApprovalShow": {
+                    "displayName": "enableApproval",
+                    "displayNameKey": "enableApprovalShow",
+                    "type": {
+                        "bool": true
+                    }
+                }
+            }
+        }
+    },
+    "dataViewMappings": [
+        {
+            "categorical": {
+                "categories": {
+                    "select": [
+                        {
+                            "for": {
+                                "in": "id"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "identity"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "tabId"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "visualId"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "rls"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "databaseName"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "tableName"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "serverName"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "userID"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "password"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "fields"
+                            }
+                        }
+                    ]
+                }
+            },
+            "conditions": [
+                {
+                    "id": {
+                        "max": 1
+                    }
+                },
+                {
+                    "identity": {
+                        "max": 1
+                    }
+                },
+                {
+                    "tabId": {
+                        "max": 1
+                    }
+                },
+                {
+                    "visualId": {
+                        "max": 1
+                    }
+                },
+                {
+                    "rls": {
+                        "max": 1
+                    }
+                }
+            ]
+        }
+    ]
+}

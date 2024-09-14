@@ -1,0 +1,6 @@
+/* index.css */
+.custom-table .ant-table-thead > tr > th {
+    background-color: #006064; /* Your desired background color */
+    color: #fff; /* Optional: Set text color for better contrast */
+  }
+  

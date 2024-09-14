@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "allowJs": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es6",
+        "sourceMap": true,
+        "types": ["react", "react-dom"],
+"jsx": "react",
+
+        "outDir": "./.tmp/build/",
+        "moduleResolution": "node",
+        "declaration": true,
+        "lib": [
+            "es2015",
+            "dom"
+        ]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules","tailwind.config.js"],
+
+    "files": [
+        "./src/visual.ts"
+    ]
+}
