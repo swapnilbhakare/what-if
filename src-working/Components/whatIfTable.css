@@ -1,0 +1,24 @@
+/* index.css */
+
+.custom-table .ant-table-thead > tr > th {
+    background-color: #006064; 
+    color: #fff; 
+  }
+
+  .frocast{
+    width: 145px !important;
+    background-color: #006064 !important;
+  }
+  
+  .frocast:hover{
+    background-color: #006064 !important;
+  }
+  
+  .button_wrap{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  table td{
+    padding: 8px 16px !important;
+  }
