@@ -1,22 +1,26 @@
 {
     "compilerOptions": {
         "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop":true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "es6",
         "sourceMap": true,
-        "types": ["react", "react-dom"],
-"jsx": "react",
+        "types": ["react", "react-dom","powerbi-visuals-api"],
+        "jsx": "react",
 
         "outDir": "./.tmp/build/",
         "moduleResolution": "node",
         "declaration": true,
+        "module": "ESNext",
         "lib": [
-            "es2015",
+            "es2019",
             "dom"
         ]
+
     },
-    "include": ["src/**/*"],
+    "include": ["src/*/"],
     "exclude": ["node_modules","tailwind.config.js"],
 
     "files": [
