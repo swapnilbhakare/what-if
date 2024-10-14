@@ -194,7 +194,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, options1, exportDataCb, 
   };
 
 
-  
+
   const handleForecastChange = (value: number, recordKey: string, index: number) => {
     setDataSource(prevData =>
       prevData.map(item => {
@@ -234,12 +234,16 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, options1, exportDataCb, 
       })
     );
   };
+
+  
   const handleDeleteColumn = (columnKey: string) => {
     // Remove from addedColumns
     setAddedColumns(prev => prev.filter(column => column !== columnKey));
     // Remove from columns
     setColumns(prevColumns => prevColumns.filter(column => column.dataIndex !== columnKey));
   };
+
+
   const generateDynamicColumns = (data: RevenueData[]) => {
     if (data.length === 0) return;
     const newdynamicColumns = Object.keys(data[0]).map((key) => ({
