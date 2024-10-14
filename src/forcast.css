@@ -1,0 +1,176 @@
+/*.forcast{
+     background-color:#E8E8E8 !important;
+     color:#006064 !important;
+     outline: none;border: none;
+     width: 101px;
+     height: 28px;
+     border-radius: 6px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     margin-bottom: 10px;
+     padding: 5px;
+
+}
+.forcast:hover{
+    color: white !important;
+    background-color:#006064 !important;
+  
+}
+.inputcolor{
+    color: white !important;
+    background-color: #8B8B8B !important;
+    max-width: 70px !important;
+    width: 100% !important;
+    padding: 6px !important;
+    border-radius: 6px !important;
+    font-size: 13px;
+    outline: none;
+    border:none;
+}*/
+
+/* .ant-table-content table td{
+    padding: 8px 12px  !important;
+} */
+/*
+table tr:hover{
+    background-color: #D9D9D9 !important;
+}
+.ant-form-item-control-input-content .modalinput{
+    color: white !important;
+    background-color: #8B8B8B !important;
+
+}
+.ant-modal-footer .ant-btn-primary {
+    background-color:#E8E8E8 !important;
+    color:#006064 !important;
+}
+.ant-modal-footer .ant-btn-primary:hover{
+    color: white !important;
+    background-color:#006064 !important;  
+}
+.ant-modal-footer .ant-btn-default:hover {
+    color: black !important;
+    border-color:  #8B8B8B !important;
+}*/
+
+.forcast{
+    border-radius: 19px;
+    background: rgb(193, 228, 236);
+    margin: 13px;
+    padding: 10px 20px;
+    color: rgb(0, 96, 100) !important;
+    outline: none;
+    border :none;
+
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+div::-webkit-scrollbar,
+textarea::-webkit-scrollbar,
+input::-webkit-scrollbar,
+select::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
+/* Hide scrollbar while allowing scroll */
+.hide-scrollbar .ant-table-body {
+    overflow-y: scroll;
+  }
+  
+  .hide-scrollbar .ant-table-body::-webkit-scrollbar {
+    display: none;  /* For Chrome, Safari, and Opera */
+  }
+  
+  .hide-scrollbar .ant-table-body {
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    scrollbar-width: none;     /* For Firefox */
+  }
+  
+.forcast:hover{
+    border-radius: 19px;
+    background: rgb(193, 228, 236);
+    margin: 13px;
+    padding: 10px 20px;
+}
+.button-style:hover{
+    background: #034C4F !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    padding: 2px 20px !important;
+    font-weight: 500 !important;
+}
+.button-style{
+
+  background: #E8E8E8 !important;
+    color:  #034C4F !important;
+  border-radius: 6px !important;
+  padding: 2px 20px !important;
+  font-weight: 500 !important;
+  margin-bottom: 10px !important;
+  border: none;
+  outline: none;
+
+
+}
+
+.custom-table .ant-table-thead > tr > th {
+    background-color: #034C4F; /* Change this to your desired header background color */
+    color: white; 
+    border: none;
+    border-radius: unset !important;
+  }
+  
+  .custom-table .ant-table-thead > tr > th:hover {
+    background-color: #006064; /* Optional: Change this to your desired hover color */
+    border-radius: unset !important;
+  }
+
+  .ant-table-thead{
+    border-radius: unset !important;
+  }
+  .ant-table-thead tr, th{
+    border-radius: unset !important;
+    padding: 8px;
+  }
+  table{
+    font-size: 16px;
+  }
+
+.inputcolor{
+    color: black!important;
+    background-color: white !important;
+    max-width: 70px !important;
+    width: 100% !important;
+    padding: 6.3px !important;
+    border-radius: 6px !important;
+    font-size: 14px;
+    outline: none;
+    border:none;
+}
+
+/* .ant-table-content table td{
+    padding: 8px 12px  !important;
+} */
+
+table tr:hover{
+    background-color: #D9D9D9 !important;
+}
+.ant-form-item-control-input-content .modalinput{
+    color: white !important;
+    background-color: #8B8B8B !important;
+
+}
+.ant-modal-footer .ant-btn-primary {
+    background-color:#E8E8E8 !important;
+    color:#006064 !important;
+}
+.ant-modal-footer .ant-btn-primary:hover{
+    color: white !important;
+    background-color:#006064 !important;  
+}
+.ant-modal-footer .ant-btn-default:hover {
+    color: black !important;
+    border-color:  #8B8B8B !important;
+}

@@ -1,0 +1,229 @@
+/*.home{
+    display: flex;
+    justify-content: center;align-items: center;
+
+}
+.admin{
+    display: flex;
+    justify-content: center;align-items: center;
+}
+.span{
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+background-color: #E8E8E8;
+padding: 10px 30px;
+border-radius: 50px;
+
+
+}
+.span:hover{
+    background-color:#C1E4EC ;
+    color: #034C4F;
+}
+
+.home span , .admin span{
+ display: block;
+ padding: 0;
+ margin: 0;
+}
+
+.radiobox{
+
+    display:flex;
+    gap:20px;
+    padding:16px;
+    background-color:#F1F2F7;
+    margin-bottom: 18px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+}
+.subheader{
+box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+padding: 10px;
+border: 1px solid #e0e0e0;
+border-radius: 10px;
+background-color: #f9f9f9;
+
+
+}*/
+.home{
+    display: flex;
+    justify-content: center;align-items: center;
+
+}
+.admin{
+    display: flex;
+    justify-content: center;align-items: center;
+}
+.span{
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+background-color: #E8E8E8;
+padding: 10px 30px;
+border-radius: 50px;
+border: none;
+outline: none;
+
+
+}
+.button-style-main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: #E8E8E8;
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    
+    
+    }
+
+    .button-style-main:hover{
+        background-color:#C1E4EC ;
+        color: #034C4F;
+    }
+    
+.span:hover {
+    background-color:#C1E4EC ;
+    color: #034C4F;
+}
+
+.home span , .admin span{
+ display: block;
+ padding: 0;
+ margin: 0;
+}
+
+.radiobox{
+
+    display:flex;
+    gap:20px;
+    padding:16px;
+    background-color:#F1F2F7;
+    margin-bottom: 18px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+}
+.subheader{
+box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+/* padding: 10px; */
+border: 1px solid #e0e0e0;
+border-radius: unset;
+background-color: #f9f9f9;
+
+
+}
+
+
+/* Hide scrollbar while allowing scroll */
+.hide-scrollbar .ant-table-body {
+    overflow-y: scroll;
+  }
+  
+  .hide-scrollbar .ant-table-body::-webkit-scrollbar {
+    display: none;  /* For Chrome, Safari, and Opera */
+  }
+  
+  .hide-scrollbar .ant-table-body {
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    scrollbar-width: none;     /* For Firefox */
+  }
+
+  .ant-table-thead > tr > th ,tr{
+    border-radius: unset !important;
+  }.home{
+    display: flex;
+    justify-content: center;align-items: center;
+
+}
+.admin{
+    display: flex;
+    justify-content: center;align-items: center;
+}
+.span{
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+background-color: #E8E8E8;
+padding: 10px 30px;
+border-radius: 50px;
+border: none;
+outline: none;
+
+
+}
+.button-style-main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: #E8E8E8;
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    
+    
+    }
+
+    .button-style-main:hover{
+        background-color:#C1E4EC ;
+        color: #034C4F;
+    }
+    
+.span:hover {
+    background-color:#C1E4EC ;
+    color: #034C4F;
+}
+
+.home span , .admin span{
+ display: block;
+ padding: 0;
+ margin: 0;
+}
+
+.radiobox{
+
+    display:flex;
+    gap:20px;
+    padding:16px;
+    background-color:#F1F2F7;
+    margin-bottom: 18px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+}
+.subheader{
+box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+/* padding: 10px; */
+border: 1px solid #e0e0e0;
+border-radius: unset;
+background-color: #f9f9f9;
+
+
+}
+
+
+/* Hide scrollbar while allowing scroll */
+.hide-scrollbar .ant-table-body {
+    overflow-y: scroll;
+  }
+  
+  .hide-scrollbar .ant-table-body::-webkit-scrollbar {
+    display: none;  /* For Chrome, Safari, and Opera */
+  }
+  
+  .hide-scrollbar .ant-table-body {
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    scrollbar-width: none;     /* For Firefox */
+  }
+
+  .ant-table-thead > tr > th ,tr{
+    border-radius: unset !important;
+  }
