@@ -71,7 +71,15 @@ const App: React.FC<AppProps> = ({ host, options, dataView, formattingSettings, 
           dataView={dataView}
           formattingSettings={formattingSettings}
           target={target} />}
-        {selectedComponent === 'whatIfTable' && <WhatIfTable />}
+        {selectedComponent === 'whatIfTable' && <WhatIfTable 
+        
+        host={host}
+        options1={options}
+        exportDataCb={exportDataCb}
+        dataView={dataView}
+        formattingSettings={formattingSettings}
+        target={target} />}
+        
       </div>
     </div>
   );

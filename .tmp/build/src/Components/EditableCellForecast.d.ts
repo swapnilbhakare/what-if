@@ -27,6 +27,6 @@ export interface EditableCellProps {
     stepValue: number;
     copy: boolean;
     showSlider: boolean;
-    handleSave: (record: Item, i: any) => void;
+    handleSave: (record: Item) => void;
 }
 export declare const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>>;

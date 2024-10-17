@@ -3,12 +3,14 @@ import { useContext, useEffect, useRef, useState, createContext } from "react";
 import * as React from "react";
 import "./whatIfTable.css";
 import type { InputRef, TableProps } from "antd";
-import { Pagination } from 'antd';
+import { message, Pagination, Upload } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"
 import { Button, Form, Input, Popover, Slider, Table } from "antd";
 import { LineOutlined, PlusOutlined, MinusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, EditOutlined, ShrinkOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { columns, prepareData } from './../data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './whatifold'
+import XLSX from 'xlsx/dist/xlsx.full.min.js';
+import Papa from "papaparse"
 //row selection 
 const EditableContext1 = React.createContext(null);
 
@@ -24,76 +26,19 @@ const EditableRow1: React.FC<any> = ({ index, ...props }) => {
   );
 };
 
-// EditableCell component
-const EditableCell1: React.FC<any> = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null); // Fix applied here
-  const form = useContext(EditableContext);
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus();
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log("Save failed:", errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
-};
+interface whatifProps {
+  host: any;
+  options1: any;
+  dataView: any;
+  exportDataCb: any;
+  formattingSettings: any;
+  target: any;
+}
 
 
 
 
-
-const WhatIfTable1: React.FC = () => {
+const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
   const [columns, setColumns] = useState<any[]>([]);
   const [fetchedDataSource, setFetchedDataSource] = useState<any[]>([]);
   const [modifiedDataSource, setModifiedDataSource] = useState<any[]>([]);
@@ -101,414 +46,7 @@ const WhatIfTable1: React.FC = () => {
   const [isPopUpVisible, setPopUpVisible] = useState(false);
   const [clickedColumnName, setClickedColumnName] = useState<string>("");
   const [modalObject, setModalObject] = useState<any>({})
-
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
-  };
-  /*
-  const mappedColumns = columns.map((col) => ({
-    ...col,
-    onCell: (record) => ({
-      record,
-      editable: col.editable,
-      dataIndex: col.dataIndex,
-      title: col.title,
-      handleSave: (updatedRecord) => {
-        console.log("In mapped columns", updatedRecord, record, col);
-  
-        // Detect if children exist for the updated record
-        const hasChildren = record.children && record.children.length > 0;
-        const newTotalColKey = `${modalObject.inputTitle}(Total)`;
-  
-        // Recalculate the total for the updated record
-        const recalculateTotal = (rowData) => {
-          let total = 0;
-          Object.keys(rowData).forEach((key) => {
-            if (key !== "ID" && key !== "CompanyName" && key.includes(modalObject.inputTitle)) {
-              if (key === newTotalColKey) return;
-              total += parseFloat(rowData[key] || 0);
-            }
-          });
-          return total.toFixed(2);
-        };
-  
-        // Distribute values to children based on their weightage
-        const distributeValueToChildrenByWeightage = (parentRecord, updatedTotal) => {
-          const totalWeightage = parentRecord.children.reduce(
-            (sum, child) => sum + (child.weightage || 0),
-            0
-          );
-  
-          // Map the children and distribute values
-          return parentRecord.children.map((child) => {
-            const childWeightage = child.weightage || 1;
-            const childValue = (updatedTotal * childWeightage) / totalWeightage;
-            
-            // Assign the distributed value to the appropriate column
-            const newChild = {
-              ...child,
-              [`${modalObject.inputTitle}(Distributed)`]: childValue.toFixed(2),
-            };
-  
-            // Ensure all new columns for children are updated as well
-            Object.keys(newChild).forEach((key) => {
-              if (!key.includes(modalObject.inputTitle)) {
-                const newColKey = `${modalObject.inputTitle}(${key})`;
-                newChild[newColKey] = child[key];
-              }
-            });
-  
-            return newChild;
-          });
-        };
-  
-        const newModifiedDataSource = modifiedDataSource.map((item) => {
-          if (item["ID"] === updatedRecord["ID"]) {
-            const newTotal = recalculateTotal(updatedRecord);
-            const previousTotal = parseFloat(item[newTotalColKey] || 0);
-            const percentageChange = calculatePercentageChange(parseFloat(newTotal), previousTotal);
-  
-            let updatedItem = {
-              ...updatedRecord,
-              [newTotalColKey]: newTotal,  // Update the new total column with the recalculated value
-              [`percentageChange_${newTotalColKey}`]: `${percentageChange.toFixed(2)}%`,  // Update percentage change
-            };
-  
-            // If the row has children, distribute the new total value according to weightage
-            if (hasChildren) {
-              updatedItem = {
-                ...updatedItem,
-                children: distributeValueToChildrenByWeightage(updatedRecord, newTotal),
-              };
-            }
-  
-            return updatedItem;
-          }
-          return item;
-        });
-  
-        setModifiedDataSource(newModifiedDataSource);
-      },
-      minValue: col.minValue,
-      maxValue: col.maxValue,
-      stepValue: col.stepValue,
-      copy: col.copy,
-      showSlider: col.showSlider,
-    }),
-  })); 
-  */
-  const mappedColumns = columns.map((col) => ({
-    ...col,
-    onCell: (record) => ({
-      record,
-      editable: col.editable,
-      dataIndex: col.dataIndex,  // Ensure this is correctly aligned with modifiedDataSource
-      title: col.title,
-      handleSave: (updatedRecord) => {
-        const newModifiedDataSource = modifiedDataSource.map((item) => {
-          if (item["ID"] === updatedRecord["ID"]) {
-            return { ...updatedRecord };  // Ensure updated records are correctly mapped
-          }
-          return item;
-        });
-        setModifiedDataSource(newModifiedDataSource);
-      },
-      minValue: col.minValue,
-      maxValue: col.maxValue,
-      stepValue: col.stepValue,
-      showSlider: col.showSlider,
-    }),
-  }));
-
-
-  useEffect(() => {
-    const data = prepareData().map((company) => {
-      // Check if any property in 'company' is an array (dynamic detection of children-like properties)
-      const nestedArrayKey = Object.keys(company).find(
-        (key) => Array.isArray(company[key])
-      );
-
-      let summedData = {};
-
-      // Ensure that the array exists and is not empty before trying to reduce
-      if (nestedArrayKey && company[nestedArrayKey].length > 0) {
-        summedData = company[nestedArrayKey].reduce((acc: any, item: any) => {
-          Object.keys(item).forEach((key) => {
-            // Sum only numeric fields dynamically, defaulting to 0 if undefined
-            if (typeof item[key] === "number") {
-              acc[key] = (acc[key] || 0) + (item[key] || 0);
-            }
-          });
-          return acc;
-        }, {});
-      }
-
-      // Return company data with dynamically calculated sums, ensuring undefined values are handled
-      return {
-        ...company,
-        ...Object.keys(summedData).reduce((acc, key) => {
-          acc[key] = summedData[key] !== undefined ? summedData[key] : 0; // Ensure no undefined values
-          return acc;
-        }, {}),
-      };
-    });
-
-    setFetchedDataSource(data);
-    setModifiedDataSource(data);
-  }, []);
-  useEffect(() => {
-    if (fetchedDataSource.length >= 1) {
-      const firstRecord = fetchedDataSource[0];
-
-      const dynamicColumns = Object.keys(firstRecord)
-        .filter((key) => key !== "children") // Exclude 'children' as it's nested data
-        .map((key) => ({
-          title: key.replace(/([A-Z])/g, " $1").trim(), // Convert camelCase to space-separated words
-          dataIndex: key,
-          key,
-          render: (value: any) => {
-            if (typeof value === "number") {
-              // Format numbers, and default undefined values to $0.00
-              return value !== undefined ? `${value.toFixed(2)}` : `$0.00`;
-            }
-            if (typeof value === "string") {
-              return value;
-            }
-            return value !== undefined ? String(value) : '0'; // Handle any other data type
-          },
-        }));
-
-      setColumns(dynamicColumns);
-    }
-  }, [fetchedDataSource]);
-  useEffect(() => {
-    console.log(clickedColumnName, "Clicked Col in useEffect")
-    switch (modalObject.selectedRadio) {
-      case ARRAY_RADIO[0]: {
-        editCellDirectly()
-      }
-        break;
-      case ARRAY_RADIO[1]: {
-        // simulationUsingSlider()
-      }
-        break;
-      case ARRAY_RADIO[2]: {
-
-      }
-        break;
-      case ARRAY_RADIO[3]: {
-
-      }
-        break;
-      default: {
-
-      }
-    }
-    // if (clickedColumnName) {
-    //   console.log("Clicked Column Name has been updated:", clickedColumnName);
-    //   const selectedColumn = modalObject.selectedColumn;
-    //   const newColumnKey = `Scenario ${columns.length + 1}`;
-    //   const newColumnDataIndex = `Scenario ${modalObject.name} (${selectedColumn})`;
-
-    //   const newColumn = {
-    //     key: newColumnKey,
-    //     title: (
-    //       <div style={{display:'flex', gap:'2px', alignItems:'center'}}>
-    //             <div style={{display:'flex', gap:'1px'}}> <span style={{display:'block'}} >{modalObject.name}</span> <span  style={{display:'block'}}>({selectedColumn})</span></div> 
-    //         <Button
-    //           type="link"
-    //           icon={<MinusOutlined />}
-    //           onClick={() => onRemoveButtonClicked(newColumnKey)}
-    //           style={{ marginLeft: 8 }}
-    //         />
-    //       </div>
-    //     ),
-    //     dataIndex: newColumnDataIndex,
-    //     width: '20%',
-    //     editable: true,
-    //     minValue: modalObject.sliderMinimumValue,
-    //     maxValue: modalObject.sliderMaximumValue,
-    //     stepValue: modalObject.sliderIncrementByValue,
-    //     copy: modalObject.copyPreviousData,
-    //     showSlider: modalObject.showSlider
-    //   };
-    //   setColumns((prevColumns) => [...prevColumns, newColumn]);
-    //   setModifiedDataSource((prevDataSource) =>
-    //     prevDataSource.map((row) => {
-    //       const newValue = modalObject.copyPreviousData ? row[selectedColumn] : '0';
-    //       return {
-    //         ...row,
-    //         [newColumnDataIndex]: newValue,
-    //       };
-    //     })
-    //   );
-    // }
-  }, [modalObject, clickedColumnName]);
-
-
-
-  const updateKeysRecursively = (row, prefix) => {
-    const newRow = { ...row };
-
-    Object.keys(row).forEach((key) => {
-      if (key !== "ID" && key !== "CompanyName") {
-        const newKey = `${prefix}(${key})`;
-
-        // If the value is an array (children), do not create a new children, just update the existing ones
-        if (Array.isArray(row[key])) {
-          // Recursively update the children
-          newRow[key] = row[key].map((child) => updateKeysRecursively(child, prefix));
-        } else if (typeof row[key] === 'object' && row[key] !== null) {
-          // If it's a nested object, recursively update its properties
-          newRow[newKey] = updateKeysRecursively(row[key], prefix);
-        } else {
-          // For other fields, update the key with the prefix (modalObject.inputTitle)
-          newRow[newKey] = row[key];
-        }
-      }
-    });
-
-    return newRow;
-  };
-
-
-  const handleModalSubmit = (obj: any) => {
-    console.log("Popup object", obj);
-    setModalObject(obj)
-    if (obj.selectedColumn) {
-      setClickedColumnName(obj.selectedColumn)
-    }
-  };
-  const onRemoveButtonClicked = (key: string) => {
-    setColumns((prevColumns) => {
-      const filteredColumns = prevColumns.filter((col) => col.key !== key);
-      return filteredColumns;
-    });
-    setModifiedDataSource((prevDataSource) =>
-      prevDataSource.map((row) => {
-        const { [key]: _, ...rest } = row;
-        return rest;
-      })
-    );
-  };
-  const calculatePercentageChange = (newValue: number, baseValue: number): number => {
-    return baseValue === 0 ? 0 : ((newValue - baseValue) / baseValue) * 100;
-  };
-  const editCellDirectly = () => {
-    const updatedColumns = [];
-
-    columns.forEach((col) => {
-      updatedColumns.push(col);
-
-      if (col.dataIndex === 'CompanyName' || col.dataIndex === 'ID') return;
-
-      const newColKey = `${modalObject.inputTitle}(${col.dataIndex})`;
-
-      const columnExists = columns.some((existingCol) => existingCol.key === newColKey);
-      if (!columnExists) {
-        const newCol = {
-          key: newColKey,
-          title: (
-            <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
-              <div style={{ display: 'flex', gap: '1px' }}>
-                <span>{newColKey}</span>
-              </div>
-              <Button
-                type="link"
-                icon={<MinusOutlined />}
-                onClick={() => onRemoveButtonClicked(newColKey)}
-                style={{ marginLeft: 8 }}
-              />
-            </div>
-          ),
-          dataIndex: newColKey,
-          editable: true,
-          width: 100 / (columns.length + 1),
-        };
-
-        updatedColumns.push(newCol);
-      }
-    });
-
-    // Update columns state with the newly added columns
-    setColumns(updatedColumns);
-
-    // Update the modifiedDataSource after adding the new column
-    setModifiedDataSource((prevDataSource) =>
-      prevDataSource.map((row) => {
-        // Recursively update row keys with the modal input title for both parents and children
-        const newRow = updateKeysRecursively(row, modalObject.inputTitle);
-        return newRow;
-      })
-    );
-  };
-  console.log(modifiedDataSource)
-  return (
-    <div>
-      <Button
-        className="button-style"
-        style={{ margin: "10px 10px" }}
-        onClick={() => setPopUpVisible(true)}>
-        What-If
-      </Button>
-      <Table
-        bordered
-        components={components}
-        className="custom-table hide-scrollbar"
-        dataSource={modifiedDataSource}
-        columns={mappedColumns as ColumnTypes}
-        pagination={{
-          total: modifiedDataSource.length,
-          position: ["bottomRight"],
-          showSizeChanger: false,
-          itemRender: (_, type, originalElement) => {
-            if (type === "prev") {
-              return <LeftOutlined />;
-            }
-            if (type === "next") {
-              return <RightOutlined />;
-            }
-            return originalElement;
-          },
-        }}
-        rowKey="ID"
-        scroll={{ x: "100%", y: 400 }}
-      />
-      {/*<Table
-        bordered
-        components={components}
-        dataSource={modifiedDataSource}  // Ensure this is the updated data
-        columns={mappedColumns}  // Ensure this maps to the updated columns
-        pagination={{ total: modifiedDataSource.length }}
-        rowKey="ID"
-        scroll={{ x: "100%", y: 400 }} 
-      />*/}
-      {
-        isPopUpVisible ?
-          <PopupModal
-            availableColumns={columns}
-            onClose={() => setPopUpVisible(false)}
-            onSubmit={handleModalSubmit}
-          /> : <></>
-      }
-    </div>
-  );
-};
-
-
-
-
-const WhatIfTable: React.FC = () => {
-  const [columns, setColumns] = useState<any[]>([]);
-  const [fetchedDataSource, setFetchedDataSource] = useState<any[]>([]);
-  const [modifiedDataSource, setModifiedDataSource] = useState<any[]>([]);
-  //popup related
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
-  const [clickedColumnName, setClickedColumnName] = useState<string>("");
-  const [modalObject, setModalObject] = useState<any>({})
+  const [ tempImportData  ,setTempImportData] = useState<any[]>([]);
 
   const components = {
     body: {
@@ -638,6 +176,64 @@ const WhatIfTable: React.FC = () => {
     setFetchedDataSource(data);
     setModifiedDataSource(data);
   }, []);
+
+  const handleFileUpload = (file: File) => {
+    const fileReader = new FileReader();
+    fileReader.onload = (e: any) => {
+      const fileType = file.name.split('.').pop()?.toLowerCase();
+      // Log the file type for verification
+      console.log("File Type:", fileType);
+      if (fileType === 'csv') {
+        // Parse CSV using PapaParse
+        console.log("Parsing CSV file...");
+        Papa.parse(e.target.result, {
+          header: true, // Use the first row as column headers
+          skipEmptyLines: true,
+          complete: (result: any) => {
+            console.log("Parsed CSV Data:", result.data); // Log the parsed CSV data
+            setModifiedDataSource(result.data);
+            message.success('CSV file uploaded successfully!');
+          },
+        });
+      } else if (fileType === 'xlsx' || fileType === 'xls') {
+        // Parse Excel using xlsx
+        console.log("Parsing Excel file...");
+        const binaryStr = e.target.result;
+        console.log("binaryStr", binaryStr)
+        const workbook = XLSX.read(binaryStr, { type: 'binary' });
+        console.log("Workbook:", workbook); // Log the workbook to inspect its structure
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        console.log("Sheet Data:", sheet); // Log the sheet data
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        console.log("Parsed Excel Data:", jsonData); // Log the parsed Excel data
+        const addIdToData = (jsonData) => {
+          return jsonData.map((row, index) => ({
+            ID: index + 1, // Add an id field starting from 1
+            ...row,        // Spread the existing row data
+          }));
+        };
+        const dataWithId = addIdToData(jsonData);  // Call the function to add IDs
+        console.log("Data with IDs:", dataWithId);
+        setTempImportData(dataWithId) as any;
+        message.success('Excel file uploaded successfully!');
+      } else {
+        message.error('Unsupported file format. Please upload CSV or Excel.');
+      }
+    };
+    if (file.type === 'text/csv') {
+      console.log("Reading CSV file as text...");
+      fileReader.readAsText(file);
+    } else {
+      console.log("Reading Excel file as binary...");
+      fileReader.readAsBinaryString(file);
+    }
+    return false; // Prevent auto upload by Ant Design
+  };
+
+  console.log("tempImportData",tempImportData);
+
+
   useEffect(() => {
     if (fetchedDataSource.length >= 1) {
       const firstRecord = fetchedDataSource[0];
@@ -877,6 +473,93 @@ const WhatIfTable: React.FC = () => {
     }
   }
 
+ 
+
+
+  const convertToCSV = (data) => {
+    // Helper function to flatten the JSON structure
+    function flattenData(data) {
+        const result = [];
+
+        const flatten = (item) => {
+            // Create a flat item excluding 'children'
+            const { children, ...flatItem } = item; // Destructure to remove 'children'
+            result.push(flatItem); // Push the flat item to the result
+
+            // Recursively flatten children if they exist
+            if (children) {
+                children.forEach(child => flatten(child)); // No need for ParentID
+            }
+        };
+
+        data.forEach(item => flatten(item));
+        return result;
+    }
+
+    // Convert to CSV format
+    function arrayToCsv(data) {
+        const csvRows = [];
+        const headers = Array.from(new Set(data.flatMap(Object.keys))); // Dynamically get all unique headers
+        csvRows.push(headers.join(',')); // Add header row
+        
+        data.forEach(row => {
+            const values = headers.map((header :any) => {
+                const escapedValue = ('' + (row[header] !== undefined ? row[header] : '')).replace(/"/g, '""'); // Escape double quotes
+                return `"${escapedValue}"`; // Enclose in quotes
+            });
+            csvRows.push(values.join(','));
+        });
+        return csvRows.join('\n');
+    }
+
+    const flattenedData = flattenData(data);
+    const csv = arrayToCsv(flattenedData);
+    return csv; // Return the CSV string
+};
+  
+  
+  
+  const handleDownload = (modifiedDataSource, host, exportDataCb) => {
+    console.log("Download initiated");
+    // Check if dataSource exists and is not empty
+    if (!modifiedDataSource || modifiedDataSource.length === 0) {
+      console.error("Data source is empty. Nothing to download.");
+      return;
+    }
+    // Prepare data to be downloaded
+    const dataToDownload = modifiedDataSource.map((row) => ({
+      ...row,
+    }));
+    console.log("Data to download:", dataToDownload);
+    // Convert data to CSV format
+    const fileContent = convertToCSV(dataToDownload);
+    // Verify if CSV content is correct
+    console.log("File content:", fileContent);
+    if (!fileContent) {
+      console.error("No content to download.");
+      return;
+    }
+    // Call exportDataCb to handle the CSV content
+    exportDataCb(fileContent, "csv file");
+    // Create a Blob from the CSV content for download via Power BI
+    const blob = new Blob([fileContent], { type: "text/csv;charset=UTF-8" });
+    console.log("Blob created:", blob);
+    // Power BI's IDownloadService to handle downloads
+    console.log("host", host);
+    const downloadService = host.downloadService; // Ensure `host` is passed as a prop from Power BI
+    console.log("downloadService available:", downloadService && typeof downloadService.downloadBlob === 'function');
+    if (downloadService && typeof downloadService.downloadBlob === 'function') {
+      // Use the service to download the CSV file
+      downloadService.downloadBlob(blob, "forecasting_data.csv");
+      console.log("Download triggered successfully");
+    } else {
+      console.error("Download service is not available.");
+    }
+  };
+
+
+  console.log("modifieddta in whatif", modifiedDataSource);
+
   return (
     <div>
       <Button
@@ -885,6 +568,16 @@ const WhatIfTable: React.FC = () => {
         onClick={() => setPopUpVisible(true)}>
         What-If
       </Button>
+      <Button className='button-style' onClick={() => handleDownload(modifiedDataSource, host, exportDataCb)}  >
+          Export
+        </Button>
+        {/* <Upload
+                  beforeUpload={handleFileUpload} 
+                  accept=".csv,.xlsx,.xls" 
+                  showUploadList={false} 
+                >
+                  <Button className="button-style">Import</Button>
+                </Upload> */}
       <Table
         bordered
         components={components}
@@ -920,10 +613,6 @@ const WhatIfTable: React.FC = () => {
     </div>
   )
 }
-
-
-
-
 
 
 type ColumnTypes = Exclude<TableProps["columns"], undefined>;
