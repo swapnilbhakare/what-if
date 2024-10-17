@@ -35,7 +35,7 @@ export class Visual implements IVisual {
   constructor(options: VisualConstructorOptions) {
     this.formattingSettingsService = new FormattingSettingsService();
     this.target = options.element;
-    this.host= options.host
+    this.host = options.host
     Visual.downloadService = options.host.downloadService;
     this.exportDataCb = this.createExportDataCb(options.host.downloadService);
   }
@@ -77,10 +77,7 @@ export class Visual implements IVisual {
     };
   }
 
-  /**
-   * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.
-   * This method is called once every time we open properties pane or when the user edit any format property.
-   */
+
   public getFormattingModel(): powerbi.visuals.FormattingModel {
     return this.formattingSettingsService.buildFormattingModel(
       this.formattingSettings

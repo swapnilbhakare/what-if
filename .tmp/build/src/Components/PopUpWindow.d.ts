@@ -7,7 +7,7 @@ interface PopupModalProps {
 export declare const ARRAY_RADIO: string[];
 export interface WhatIfParameterType {
     selectedRadio: any;
-    name: string;
+    inputTitle: string;
     sliderMinimumValue: any;
     sliderMaximumValue: any;
     sliderIncrementByValue: any;
@@ -28,6 +28,9 @@ export interface WhatIfBulkEditingObject {
     sliderMinimumValue: any;
     sliderMaximumValue: any;
     inputTitle: any;
+    sliderIncrementByValue: any;
+    sliderDefaultValue: any;
+    copyPreviousData: any;
 }
 export declare const PopupModal: React.FC<PopupModalProps>;
 export {};
