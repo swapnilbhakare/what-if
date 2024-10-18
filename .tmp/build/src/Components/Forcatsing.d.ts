@@ -1,5 +1,5 @@
 import * as React from "react";
-import "../../src/forcast.css";
+import "../Components/styles/forcast.css";
 interface ForecastingProps {
     host: any;
     options1: any;

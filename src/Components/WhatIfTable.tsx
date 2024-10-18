@@ -1,13 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { useContext, useEffect, useRef, useState, createContext } from "react";
 import * as React from "react";
-import "./whatIfTable.css";
+import "../Components/styles/whatIfTable.css";
 import type { InputRef, TableProps } from "antd";
 import { message, Pagination, Upload } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"
 import { Button, Form, Input, Popover, Slider, Table } from "antd";
 import { LineOutlined, PlusOutlined, MinusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, EditOutlined, ShrinkOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { columns, prepareData } from './../data'
+import { columns, prepareData } from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './whatifold'
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
@@ -562,15 +562,17 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
 
   return (
     <div>
+      <div style={{ display:'flex', gap:'10px', alignItems:'center' , margin:'10px 10px'}}>
       <Button
         className="button-style"
-        style={{ margin: "10px 10px" }}
+        
         onClick={() => setPopUpVisible(true)}>
         What-If
       </Button>
       <Button className='button-style' onClick={() => handleDownload(modifiedDataSource, host, exportDataCb)}  >
-          Export
+          Download
         </Button>
+        </div>
         {/* <Upload
                   beforeUpload={handleFileUpload} 
                   accept=".csv,.xlsx,.xls" 

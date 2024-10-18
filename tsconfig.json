@@ -20,7 +20,7 @@
         ]
 
     },
-    "include": ["src/*/"],
+    "include": ["src/*/", "src/Components/data.tsx"],
     "exclude": ["node_modules","tailwind.config.js"],
 
     "files": [

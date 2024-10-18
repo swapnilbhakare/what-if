@@ -1,14 +1,12 @@
 
-
-//through abhishek bhai
 import * as React from "react";
-import "../../src/forcast.css"
+import "../Components/styles/forcast.css"
 import { Dayjs } from 'dayjs';
 import { useContext, useEffect, useRef, useState, createContext } from "react";
 import { SiCodeforces } from "react-icons/si";
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
-import { columns, prepareData } from './../data'
+import { columns, prepareData } from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './EditableCellForecast'
 import {
   MinusOutlined, LeftOutlined, RightOutlined
@@ -607,15 +605,15 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
   console.log(modifiedDataSource, "  console.log(modifiedDataSource)")
   return (
     <div>
-
+        <div style={{ display:'flex', gap:'10px', alignItems:'center', margin:'10px 10px'}}>
       <Button
         className="button-style"
-        style={{ margin: "10px 10px" }}
+     
         onClick={() => setPopUpVisible(true)}>
-        Forecaste
+        Forecast
       </Button>
       <Button className='button-style' onClick={() => handleDownload(modifiedDataSource, host, exportDataCb)}  >
-        Export
+        Download
       </Button>
 
               <Upload
@@ -626,7 +624,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
                   <Button className="button-style">Import</Button>
                 </Upload>
             
-
+</div>
       <Table
         bordered
         components={components}

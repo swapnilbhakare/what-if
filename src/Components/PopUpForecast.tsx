@@ -182,20 +182,21 @@ export const PopupModal: React.FC<PopupModalProps> = ({
   const showBlankForecast = () => {
     return (
       <div>
-        <Form.Item label="Forecast Title" required>
+        <label> Title</label>
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter forecast title"
           />
-        </Form.Item>
-        <Form.Item label="Select Date Range" required>
+    
+       <label> Date Range</label>
+       <div>
           <RangePicker
             value={forecastRange}
             onChange={setForecastRange}
             format="YYYY-MM-DD"
           />
-        </Form.Item>
+       </div>
       </div>
     )
   }
@@ -205,13 +206,13 @@ export const PopupModal: React.FC<PopupModalProps> = ({
         <div>
           <div>
 
-            <Form.Item label="Forecast Title" required>
+          <label>Title</label>
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Enter forecast title"
               />
-            </Form.Item>
+         
             <label>Select Existing Columns</label>
             <Select
               value={selectedColumn}
@@ -229,20 +230,21 @@ export const PopupModal: React.FC<PopupModalProps> = ({
     return (
       <>
         <div>
-          <Form.Item label="Forecast Title" required>
+        <label>Title</label>
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Enter forecast title"
             />
-          </Form.Item>
-          <Form.Item label="Select Date Range" required>
+          
+          <label> Date Range</label>
+          <div>
             <RangePicker
               value={forecastRange}
               onChange={setForecastRange}
               format="YYYY-MM-DD"
             />
-          </Form.Item>
+         </div>
         </div>
       </>
     )

@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./whatIfTable.css";
+import "../Components/styles/whatIfTable.css";
 export declare const EditableContext: React.Context<any>;
 export interface Item {
     key: string;

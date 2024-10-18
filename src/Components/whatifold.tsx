@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { useContext, useEffect, useRef, useState, createContext } from "react";
 import * as React from "react";
-import "./whatIfTable.css";
+import "../Components/styles/whatIfTable.css";
 import type { InputRef, TableProps } from "antd";
 import { Pagination } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"

@@ -1,12 +1,11 @@
 import { useContext, useEffect, useRef, useState, createContext } from "react";
 import * as React from "react";
-import "./whatIfTable.css";
+import "../Components/styles/whatIfTable.css";
 import type { InputRef, TableProps } from "antd";
 import { Pagination } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"
 import { Button, Form, Input, Popover, Slider, Table } from "antd";
 import { LineOutlined, PlusOutlined, MinusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, EditOutlined, ShrinkOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-
 
 export const EditableContext = createContext<any | null>(null);
 export interface Item {
@@ -81,8 +80,6 @@ export const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> 
     setSliderValue(parseFloat(String(record?.[dataIndex] || "0")));
     setTextValue(String(record?.[dataIndex] || "0"));
   }, [record, dataIndex]);
-
-
   const calculateValue = (inputText: string): number => {
     const operators: string[] = [];
     const values: number[] = [];

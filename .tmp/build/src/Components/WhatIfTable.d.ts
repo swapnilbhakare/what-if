@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./whatIfTable.css";
+import "../Components/styles/whatIfTable.css";
 interface whatifProps {
     host: any;
     options1: any;
