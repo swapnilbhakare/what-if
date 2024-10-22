@@ -143,3 +143,8 @@ table tr:hover{
     color: black !important;
     border-color:  #8B8B8B !important;
 }
+
+
+table td{
+  font-size: 15px !important;
+}

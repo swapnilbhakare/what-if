@@ -7,7 +7,7 @@ import { message, Pagination, Upload } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"
 import { Button, Form, Input, Popover, Slider, Table } from "antd";
 import { LineOutlined, PlusOutlined, MinusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, EditOutlined, ShrinkOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { KeyMap  , detectKeys ,convertData, prepareData } from './data'
+import { KeyMap  , detectKeys ,convertData, prepareData,calculateColumnWidth } from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './whatifold'
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
@@ -57,10 +57,12 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
 
   const mappedColumns = columns.map((col) => ({
     ...col,
+   
     onCell: (record) => ({
       record,
       editable: col.editable,
       dataIndex: col.dataIndex,
+      width:calculateColumnWidth(col.dataIndex ) ,
       title: col.title,
       handleSave: (updatedRecord, updatedChildren) => {
         console.log(updatedRecord, updatedChildren);
@@ -449,7 +451,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
           ),
           dataIndex: newColKey,
           editable: true,
-          width: '20%',
+          width: calculateColumnWidth( newColKey) 
         };
         updatedColumns.push(newCol);
       }
@@ -489,7 +491,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
             </div>
           ),
           dataIndex: newColKey,
-          width: '20%',
+          width: calculateColumnWidth( newColKey),
           editable: true,
           minValue: modalObject.sliderMinimumValue,
           maxValue: modalObject.sliderMaximumValue,

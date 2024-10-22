@@ -150,6 +150,9 @@ table tr:hover {
   color: black !important;
   border-color: #8B8B8B !important;
 }
+table td {
+  font-size: 15px !important;
+}
 
 .custom-table .ant-table-thead > tr > th {
   background-color: #006064;
@@ -229,6 +232,9 @@ table tr:hover {
 }
 .ant-table-wrapper .ant-table-cell {
   padding: 8px 12px  !important;
+}
+table td {
+  font-size: 13px !important;
 }
 
 /*.home{

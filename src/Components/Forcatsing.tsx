@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState, createContext } from "react";
 import { SiCodeforces } from "react-icons/si";
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
-import {  prepareData ,KeyMap  , detectKeys ,convertData } from './data'
+import {  prepareData ,KeyMap  , detectKeys ,convertData ,calculateColumnWidth} from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './EditableCellForecast'
 import {
   MinusOutlined, LeftOutlined, RightOutlined
@@ -58,6 +58,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
     onCell: (record) => ({
       record,
       editable: col.editable,
+      width:calculateColumnWidth( col.dataIndex),
       dataIndex: col.dataIndex,
       title: col.title,
 
@@ -334,7 +335,7 @@ const sumAccordingly = (data) => {
           ),
           dataIndex: columnKey,
           editable: true,
-          width: '20%',
+          width: calculateColumnWidth(columnKey) 
         };
         updatedColumns.push(newCol);
       }
@@ -391,7 +392,7 @@ const sumAccordingly = (data) => {
         ),
         dataIndex: columnKey,
         editable: true,
-        width: '20%',
+        width: calculateColumnWidth(columnKey)
       };
 
       // Add the new column to the updated columns array
@@ -472,7 +473,7 @@ const sumAccordingly = (data) => {
           ),
           dataIndex: columnKey,
           editable: true,
-          width: '20%',
+          width:calculateColumnWidth(columnKey)
         };
         updatedColumns.push(newCol);
       }

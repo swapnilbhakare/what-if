@@ -82,3 +82,7 @@ border-color: #006064 !important;
   .ant-table-wrapper .ant-table-cell{
     padding: 8px 12px  !important;
   }
+
+table td{
+  font-size: 13px !important;
+}

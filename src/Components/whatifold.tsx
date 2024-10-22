@@ -564,7 +564,7 @@ export const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> 
       {showSlider && (
         <Button
           type="link"
-          icon={visible ? <ShrinkOutlined /> : <EditOutlined />}
+          icon={visible ? <ShrinkOutlined /> : <EditOutlined style={{color:'#006064'}} />}
           onClick={(e) => {
             e.stopPropagation();
             setVisible((prev) => !prev);

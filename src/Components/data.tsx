@@ -676,6 +676,20 @@ export const convertData = (data) => {
   // console.log("New data:", groupedData);
 };
 
+
+export const calculateColumnWidth = (text: string) => {
+  const baseWidth = 100; // Base width for short text
+  const extraWidthPerChar = 10; // Extra width for each character in the header
+  const minWidth = 65; // Minimum width to prevent very narrow columns
+  const maxWidth = 180; // Maximum width to prevent very wide columns
+
+  // Calculate width based on text length
+  const calculatedWidth = baseWidth + text.length * extraWidthPerChar;
+
+  // Ensure width is within the min-max range
+  return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+};
+
   
 //in 
 

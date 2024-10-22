@@ -90,3 +90,4 @@ export interface KeyMap {
 }
 export declare const detectKeys: (data: any[]) => KeyMap;
 export declare const convertData: (data: any) => any;
+export declare const calculateColumnWidth: (text: string) => number;
