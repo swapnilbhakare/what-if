@@ -18,6 +18,8 @@
 //   }
 // ];
 
+import { Children } from "react"
+
 // export const CompanyName = [
 //   "Apple",
 //   "Google",
@@ -270,9 +272,10 @@ export const prepareData2 = () => {
 //new data
 export const prepareData = () => {
   return [
+   
     {
       ID: '1',
-      ParentCompany: "(HUL) - Beauty & Personal Care",
+      ParentCompany: "(HUL) Beauty & Personal Care",
       children: [
         {
           ID: '1.1',
@@ -291,7 +294,7 @@ export const prepareData = () => {
       ]
     },{
       ID: '2',
-      ParentCompany: "(HUL) - Food & Refreshment",
+      ParentCompany: "(HUL) Food & Refreshment",
       children: [
         {
           ID: '2.1',
@@ -309,6 +312,7 @@ export const prepareData = () => {
         }
       ]
     }
+    
   ]
 }
 //for algorithm
@@ -558,5 +562,7 @@ export const convertData = (data) => {
 
   
 //in 
+
+
 
 
