@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState, createContext } from "react";
 import { SiCodeforces } from "react-icons/si";
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
-import { columns, prepareData } from './data'
+import {  prepareData ,KeyMap  , detectKeys ,convertData } from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './EditableCellForecast'
 import {
   MinusOutlined, LeftOutlined, RightOutlined
@@ -93,38 +93,91 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
       showSlider: col.showSlider,
     }),
   }));
-  useEffect(() => {
-    const data = prepareData().map((company) => {
-      // Check if any property in 'company' is an array (dynamic detection of children-like properties)
-      const nestedArrayKey = Object.keys(company).find(
-        (key) => Array.isArray(company[key])
-      );
-      let summedData = {};
-      // Ensure that the array exists and is not empty before trying to reduce
-      if (nestedArrayKey && company[nestedArrayKey].length > 0) {
-        summedData = company[nestedArrayKey].reduce((acc: any, item: any) => {
-          Object.keys(item).forEach((key) => {
-            // Sum only numeric fields dynamically, defaulting to 0 if undefined
-            if (typeof item[key] === "number") {
-              acc[key] = (acc[key] || 0) + (item[key] || 0);
-            }
-          });
-          return acc;
-        }, {});
-      }
-      // Return company data with dynamically calculated sums, ensuring undefined values are handled
-      return {
-        ...company,
-        ...Object.keys(summedData).reduce((acc, key) => {
-          acc[key] = summedData[key] !== undefined ? summedData[key] : 0; // Ensure no undefined values
-          return acc;
-        }, {}),
-      };
+
+
+const sumNumericFieldsRecursively = (item) => {
+  let summedData = {};
+
+  // Sum numeric properties of the current item
+  Object.keys(item).forEach((key) => {
+    if (typeof item[key] === "number") {
+      summedData[key] = (summedData[key] || 0) + item[key];
+    }
+  });
+
+  // If there are children, sum their numeric fields recursively
+  if (item.children && item.children.length > 0) {
+    item.children.forEach((child) => {
+      const childSums = sumNumericFieldsRecursively(child);
+
+      // Add the child's sums to the current item's sums
+      Object.keys(childSums).forEach((key) => {
+        summedData[key] = (summedData[key] || 0) + childSums[key];
+      });
     });
 
-    setFetchedDataSource(data);
-    setModifiedDataSource(data);
-  }, []);
+    // Explicitly assign the summed numeric fields (like Revenue) to the parent object
+    Object.keys(summedData).forEach((key) => {
+      if (typeof item[key] !== "number") {
+        item[key] = summedData[key]; // Assign summed revenue from children to the parent
+      }
+    });
+  }
+
+  return summedData;
+};
+
+useEffect(() => {
+  const data = prepareData().map((company) => {
+    let summedData = {};
+
+    // If the company has children, sum their numeric fields recursively
+    if (company.children && company.children.length > 0) {
+      summedData = sumNumericFieldsRecursively(company);
+
+      // Ensure that the summed numeric fields (e.g., Revenue) are applied to the company itself
+      return {
+        ...company,
+        ...summedData,  // Apply summed numeric fields (like Revenue) back to the company
+        children: company.children.map(child => ({
+          ...child,
+        }))
+      };
+    }
+
+    // If there are no children, return the company as it is
+    return company;
+  });
+
+  setFetchedDataSource(data);
+  setModifiedDataSource(data);
+}, []);
+
+
+const sumAccordingly = (data) => {
+  const myData = data.map((company) => {
+    let summedData = {};
+
+    // If the company has children, sum their numeric fields recursively
+    if (company.children && company.children.length > 0) {
+      summedData = sumNumericFieldsRecursively(company);
+
+      // Ensure that the summed numeric fields (e.g., Revenue) are applied to the company itself
+      return {
+        ...company,
+        ...summedData,  // Apply summed numeric fields (like Revenue) back to the company
+        children: company.children.map(child => ({
+          ...child,
+        }))
+      };
+    }
+
+    // If there are no children, return the company as it is
+    return company;
+  });
+  setModifiedDataSource(myData)
+} 
+
 
   const handleFileUpload = (file: File) => {
     const fileReader = new FileReader();
@@ -140,7 +193,8 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
           skipEmptyLines: true,
           complete: (result: any) => {
             console.log("Parsed CSV Data:", result.data); // Log the parsed CSV data
-            setModifiedDataSource(result.data);
+           // setModifiedDataSource(result.data);
+           sumAccordingly( convertData(result.data))
             message.success('CSV file uploaded successfully!');
           },
         });
@@ -363,30 +417,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
       prevDataSource.map((row) => updateRowWithNewColumn(row, selectedColumn, columnKey))
     );
   }
-  // const updateKeysRecursively1 = (row, prefix) => {
-  //   const newRow = { ...row };
-
-  //   Object.keys(row).forEach((key) => {
-  //     if (key !== "ID" && key !== "CompanyName") {
-  //       const newKey = `${prefix}(${key})`;
-
-  //       // If the value is an array (children), do not create a new children, just update the existing ones
-  //       if (Array.isArray(row[key])) {
-  //         // Recursively update the children
-  //         newRow[key] = row[key].map((child) => updateKeysRecursively1(child, prefix));
-  //       } else if (typeof row[key] === 'object' && row[key] !== null) {
-  //         // If it's a nested object, recursively update its properties
-  //         newRow[newKey] = updateKeysRecursively1(row[key], prefix);
-  //       } else {
-  //         // For other fields, update the key with the prefix (modalObject.inputTitle)
-  //         newRow[newKey] = ""//row[key];
-  //       }
-  //     }
-  //   });
-
-  //   return newRow;
-  // };
-  
+ 
   const forecastMultipleYears = (year2023: string, year2022: string, years: number): number[] => {
     const forecasts: number[] = [];
     const value2023 = parseFloat(year2023);
@@ -458,7 +489,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
     const newRow = { ...row };
 
     // Find last two numerical revenue values
-    const revenueKeys = Object.keys(row).filter(key => key.includes('Revenue') && typeof row[key] === 'number');
+    const revenueKeys = Object.keys(row).filter(key => ( key.includes('Revenue') && typeof row[key] === 'string' )   ||  ( key.includes('Revenue') && typeof row[key] === 'number' )   ) ;
 
     if (revenueKeys.length >= 2) {
       const lastRevenue = row[revenueKeys[0]]; // Latest revenue
@@ -476,7 +507,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
 
     // Recursively update keys for children
     Object.keys(row).forEach((key) => {
-      if (key !== "ID" && key !== "CompanyName") {
+      if (key !== "ID" && key !== "CompanyName" || "ParentCompany" ) {
         const newKey = `${prefix}(${key})`;
 
         if (Array.isArray(row[key])) {
@@ -627,6 +658,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
 </div>
       <Table
         bordered
+        
         components={components}
         className="custom-table hide-scrollbar"
         dataSource={modifiedDataSource}
@@ -646,7 +678,7 @@ const Forcasting: React.FC<ForecastingProps> = ({ host, exportDataCb
           },
         }}
         rowKey="ID"
-        scroll={{ x: "max-content", y: 400 }}
+        scroll={{ x: "max-content", y: 'calc(100vh - 100px)' }}
       />
       {
         isPopUpVisible ?

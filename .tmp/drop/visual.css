@@ -33,6 +33,13 @@ select::-webkit-scrollbar {
 .hide-scrollbar .ant-table-body {
   overflow-y: scroll;
 }
+:where(.css-ccdg5a).ant-btn-variant-link,
+:where(.css-ccdg5a).ant-btn-variant-link:hover {
+  color: white;
+}
+:where(.css-ccdg5a).ant-btn-variant-link:not(:disabled):not(.ant-btn-disabled):hover {
+  color: white;
+}
 .hide-scrollbar .ant-table-body::-webkit-scrollbar {
   display: none;
   /* For Chrome, Safari, and Opera */
@@ -148,11 +155,18 @@ table tr:hover {
   background-color: #006064;
   color: #fff;
 }
+:where(.css-ccdg5a).ant-btn-variant-link,
+:where(.css-ccdg5a).ant-btn-variant-link:hover {
+  color: white;
+}
 .ant-radio-group-solid :where(.css-ccdg5a).ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
   color: white !important;
   background-color: #006064 !important;
   outline: none;
   border: none;
+}
+:where(.css-ccdg5a).ant-btn-variant-link:not(:disabled):not(.ant-btn-disabled):hover {
+  color: white;
 }
 :where(.css-ccdg5a).ant-pagination .ant-pagination-item-active a,
 .ant-pagination-item-active {

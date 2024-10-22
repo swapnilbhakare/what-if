@@ -7,7 +7,7 @@ import { message, Pagination, Upload } from 'antd';
 import { PopupModal, WhatIfParameterType, WhatIfSimulationObject, ARRAY_RADIO } from "./PopUpWindow"
 import { Button, Form, Input, Popover, Slider, Table } from "antd";
 import { LineOutlined, PlusOutlined, MinusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, EditOutlined, ShrinkOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { columns, prepareData } from './data'
+import { KeyMap  , detectKeys ,convertData, prepareData } from './data'
 import { EditableCellProps, EditableContext, Item, EditableRow, EditableCell } from './whatifold'
 import XLSX from 'xlsx/dist/xlsx.full.min.js';
 import Papa from "papaparse"
@@ -144,38 +144,121 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
 
 
 
+  // useEffect(() => {
+  //   const data = prepareData().map((company) => {
+  //     // Check if any property in 'company' is an array (dynamic detection of children-like properties)
+  //     const nestedArrayKey = Object.keys(company).find(
+  //       (key) => Array.isArray(company[key])
+  //     );
+  //     let summedData = {};
+  //     // Ensure that the array exists and is not empty before trying to reduce
+  //     if (nestedArrayKey && company[nestedArrayKey].length > 0) {
+  //       summedData = company[nestedArrayKey].reduce((acc: any, item: any) => {
+  //         Object.keys(item).forEach((key) => {
+  //           // Sum only numeric fields dynamically, defaulting to 0 if undefined
+  //           if (typeof item[key] === "number") {
+  //             acc[key] = (acc[key] || 0) + (item[key] || 0);
+  //           }
+  //         });
+  //         return acc;
+  //       }, {});
+  //     }
+  //     // Return company data with dynamically calculated sums, ensuring undefined values are handled
+  //     return {
+  //       ...company,
+  //       ...Object.keys(summedData).reduce((acc, key) => {
+  //         acc[key] = summedData[key] !== undefined ? summedData[key] : 0; // Ensure no undefined values
+  //         return acc;
+  //       }, {}),
+  //     };
+  //   });
+
+  //   setFetchedDataSource(data);
+  //   setModifiedDataSource(data);
+  // }, []);
+  const sumNumericFieldsRecursively = (item) => {
+    let summedData = {};
+  
+    // Sum numeric properties of the current item
+    Object.keys(item).forEach((key) => {
+      if (typeof item[key] === "number") {
+        summedData[key] = (summedData[key] || 0) + item[key];
+      }
+    });
+  
+    // If there are children, sum their numeric fields recursively
+    if (item.children && item.children.length > 0) {
+      item.children.forEach((child) => {
+        const childSums = sumNumericFieldsRecursively(child);
+  
+        // Add the child's sums to the current item's sums
+        Object.keys(childSums).forEach((key) => {
+          summedData[key] = (summedData[key] || 0) + childSums[key];
+        });
+      });
+  
+      // Explicitly assign the summed numeric fields (like Revenue) to the parent object
+      Object.keys(summedData).forEach((key) => {
+        if (typeof item[key] !== "number") {
+          item[key] = summedData[key]; // Assign summed revenue from children to the parent
+        }
+      });
+    }
+  
+    return summedData;
+  };
+  
   useEffect(() => {
     const data = prepareData().map((company) => {
-      // Check if any property in 'company' is an array (dynamic detection of children-like properties)
-      const nestedArrayKey = Object.keys(company).find(
-        (key) => Array.isArray(company[key])
-      );
       let summedData = {};
-      // Ensure that the array exists and is not empty before trying to reduce
-      if (nestedArrayKey && company[nestedArrayKey].length > 0) {
-        summedData = company[nestedArrayKey].reduce((acc: any, item: any) => {
-          Object.keys(item).forEach((key) => {
-            // Sum only numeric fields dynamically, defaulting to 0 if undefined
-            if (typeof item[key] === "number") {
-              acc[key] = (acc[key] || 0) + (item[key] || 0);
-            }
-          });
-          return acc;
-        }, {});
+  
+      // If the company has children, sum their numeric fields recursively
+      if (company.children && company.children.length > 0) {
+        summedData = sumNumericFieldsRecursively(company);
+  
+        // Ensure that the summed numeric fields (e.g., Revenue) are applied to the company itself
+        return {
+          ...company,
+          ...summedData,  // Apply summed numeric fields (like Revenue) back to the company
+          children: company.children.map(child => ({
+            ...child,
+          }))
+        };
       }
-      // Return company data with dynamically calculated sums, ensuring undefined values are handled
-      return {
-        ...company,
-        ...Object.keys(summedData).reduce((acc, key) => {
-          acc[key] = summedData[key] !== undefined ? summedData[key] : 0; // Ensure no undefined values
-          return acc;
-        }, {}),
-      };
+  
+      // If there are no children, return the company as it is
+      return company;
     });
-
+  
     setFetchedDataSource(data);
     setModifiedDataSource(data);
   }, []);
+
+
+  const sumAccordingly = (data) => {
+    const myData = data.map((company) => {
+      let summedData = {};
+  
+      // If the company has children, sum their numeric fields recursively
+      if (company.children && company.children.length > 0) {
+        summedData = sumNumericFieldsRecursively(company);
+  
+        // Ensure that the summed numeric fields (e.g., Revenue) are applied to the company itself
+        return {
+          ...company,
+          ...summedData,  // Apply summed numeric fields (like Revenue) back to the company
+          children: company.children.map(child => ({
+            ...child,
+          }))
+        };
+      }
+  
+      // If there are no children, return the company as it is
+      return company;
+    });
+    setModifiedDataSource(myData)
+  } 
+
 
   const handleFileUpload = (file: File) => {
     const fileReader = new FileReader();
@@ -191,7 +274,9 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
           skipEmptyLines: true,
           complete: (result: any) => {
             console.log("Parsed CSV Data:", result.data); // Log the parsed CSV data
-            setModifiedDataSource(result.data);
+           // setModifiedDataSource(result.data);
+           sumAccordingly( convertData(result.data))
+
             message.success('CSV file uploaded successfully!');
           },
         });
@@ -282,7 +367,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
     console.log(row, prefix, "1291")
     const newRow = { ...row };
     Object.keys(row).forEach((key) => {
-      if (key !== "ID" && key !== "CompanyName") {
+      if ((key !== "ID" && key !== "CompanyName" || "ParentCompany")) {
         const newKey = `${prefix}(${key})`;
 
         // If the value is an array (children), do not create a new children, just update the existing ones
@@ -343,7 +428,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
     const updatedColumns = [];
     columns.forEach((col) => {
       updatedColumns.push(col);
-      if (col.dataIndex === 'CompanyName' || col.dataIndex === 'ID') return;
+      if (col.dataIndex === 'CompanyName' || col.dataIndex === 'ID' || col.dataIndex === "ParentCompany") return;
       const newColKey = `${modalObject.inputTitle}(${col.dataIndex})`;
       const columnExists = columns.some((existingCol) => existingCol.key === newColKey);
       if (!columnExists) {
@@ -384,7 +469,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
     const updatedColumns = [];
     columns.forEach((col) => {
       updatedColumns.push(col);
-      if (col.dataIndex === 'CompanyName' || col.dataIndex === 'ID') return;
+      if (col.dataIndex === 'CompanyName' || col.dataIndex === 'ID'|| col.dataIndex === "ParentCompany") return;
       const newColKey = `${modalObject.inputTitle}(${col.dataIndex})`;
       const columnExists = columns.some((existingCol) => existingCol.key === newColKey);
       if (!columnExists) {
@@ -572,14 +657,15 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
       <Button className='button-style' onClick={() => handleDownload(modifiedDataSource, host, exportDataCb)}  >
           Download
         </Button>
-        </div>
-        {/* <Upload
+        
+        <Upload
                   beforeUpload={handleFileUpload} 
                   accept=".csv,.xlsx,.xls" 
                   showUploadList={false} 
                 >
                   <Button className="button-style">Import</Button>
-                </Upload> */}
+                </Upload>
+                </div>
       <Table
         bordered
         components={components}
@@ -601,7 +687,7 @@ const WhatIfTable: React.FC<whatifProps> = ({host,exportDataCb}) => {
           },
         }}
         rowKey="ID"
-        scroll={{ x: "max-content", y: 400 }}
+        scroll={{ x: "max-content", y: 'calc(100vh - 100px)' }}
       />
 
       {
