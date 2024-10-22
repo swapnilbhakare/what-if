@@ -17,7 +17,7 @@ interface AppProps {
 
 const App: React.FC<AppProps> = ({ host, options, dataView, formattingSettings, target, exportDataCb, }) => {
   // console.log("props in app", host, options, dataView, formattingSettings, target)
-  const [selectedComponent, setSelectedComponent] = React.useState('forcasting');
+  const [selectedComponent, setSelectedComponent] = React.useState('whatIfTable');
 
   const handleButtonClick = (value: string) => {
     setSelectedComponent(value);

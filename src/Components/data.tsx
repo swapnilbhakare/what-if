@@ -315,6 +315,62 @@ export const prepareData = () => {
     
   ]
 }
+// export const prepareData = () => {
+//   return [
+//     {
+//       ID: '1',
+//       ParentCompany: "McDonald's Corp.",
+//       children: [
+//         {
+//           ID: '1.1',
+//           ParentCompany: "Pizza",
+//           children: [
+//             {
+//               ID: '1.1.1',
+//               ParentCompany: "Pizza-1", 
+//               Revenue2023: 130000.65,
+//               Revenue2024: 145300.98
+//             },
+//             {
+//               ID: '1.1.2',
+//               ParentCompany: "Pizza-2", 
+//               children: [
+//                   {
+//                     ID: '1.1.1.1',
+//                     ParentCompany: "Pizza-2-1", 
+//                     children: [
+//                       {
+//                         ID: '1.1.1.1.1',
+//                         ParentCompany: "Pizza-2-1-1",  
+//                         Revenue2023: 130000.65,
+//                         Revenue2024: 145300.98
+//                       }
+//                     ] 
+//                   },
+//                   {
+//                     ID: '1.1.1.2',
+//                     ParentCompany: "Pizza-2-2",  
+//                     Revenue2023: 130000.65,
+//                     Revenue2024: 145300.98
+//                   }
+//               ]
+//               // Revenue2023: 130000.65,
+//               // Revenue2024: 145300.98
+//             }
+//           ], 
+//           // Revenue2023: 145000.45,
+//           // Revenue2024: 165000.78
+//         },
+//         {
+//           ID: '1.2',
+//           ParentCompany: "Coca-cola", 
+//           Revenue2023: 130000.65,
+//           Revenue2024: 145300.98
+//         }
+//       ]
+//     },
+//   ]
+// }
 //for algorithm
 export const getData = () => {
   return [
