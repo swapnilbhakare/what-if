@@ -678,7 +678,7 @@ const sumAccordingly = (data) => {
           },
         }}
         rowKey="ID"
-        scroll={{ x: "max-content", y: 'calc(100vh - 100px)' }}
+        scroll={{ x: "max-content", y: 400 }}
       />
       {
         isPopUpVisible ?

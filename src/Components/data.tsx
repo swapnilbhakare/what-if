@@ -272,7 +272,6 @@ export const prepareData2 = () => {
 //new data
 export const prepareData = () => {
   return [
-   
     {
       ID: '1',
       ParentCompany: "(HUL) Beauty & Personal Care",
@@ -292,7 +291,8 @@ export const prepareData = () => {
           Revenue2025: 580000.45,
         }
       ]
-    },{
+    },
+    {
       ID: '2',
       ParentCompany: "(HUL) Food & Refreshment",
       children: [
@@ -311,10 +311,70 @@ export const prepareData = () => {
           Revenue2025: 370000.20,
         }
       ]
+    },
+    {
+      ID: '3',
+      ParentCompany: "(HUL) Home Care",
+      children: [
+        {
+          ID: '3.1',
+          ParentCompany: "Surf Excel",
+          Revenue2023: 400000.10,
+          Revenue2024: 450000.35,
+          Revenue2025: 490000.50,
+        },
+        {
+          ID: '3.2',
+          ParentCompany: "Comfort",
+          Revenue2023: 250000.20,
+          Revenue2024: 300000.50,
+          Revenue2025: 350000.75,
+        }
+      ]
+    },
+    {
+      ID: '4',
+      ParentCompany: "(HUL) Health & Hygiene",
+      children: [
+        {
+          ID: '4.1',
+          ParentCompany: "Lifebuoy",
+          Revenue2023: 370000.50,
+          Revenue2024: 420000.25,
+          Revenue2025: 460000.85,
+        },
+        {
+          ID: '4.2',
+          ParentCompany: "Pureit",
+          Revenue2023: 190000.40,
+          Revenue2024: 210000.80,
+          Revenue2025: 230000.60,
+        }
+      ]
+    },
+    {
+      ID: '5',
+      ParentCompany: "(HUL) Home Care & Detergents",
+      children: [
+        {
+          ID: '5.1',
+          ParentCompany: "Wheel",
+          Revenue2023: 220000.50,
+          Revenue2024: 250000.75,
+          Revenue2025: 280000.90,
+        },
+        {
+          ID: '5.2',
+          ParentCompany: "Rin",
+          Revenue2023: 300000.40,
+          Revenue2024: 350000.60,
+          Revenue2025: 400000.80,
+        }
+      ]
     }
-    
-  ]
+  ];
 }
+
 // export const prepareData = () => {
 //   return [
 //     {
